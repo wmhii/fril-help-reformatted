@@ -1,0 +1,2225 @@
+
+^!
+((test a) (!))
+((test b))
+?((test a))
+% yes
+?((test b))
+% yes
+?((test X) (p 'X = ' X) (pp) (fail))
+X = a
+% no
+^
+^?
+((word1 hello))
+((word2 world))
+?((word1 X) (word2 Y) (p X Y) (pp))
+% hello world
+% yes
+^
+^abort
+((test X)
+	(negg con X)
+	(p X is not a constant)
+	(abort))
+test 12
+12 is not a constant
+system reset
+^
+^addcl
+?((addcl ((append (H|T) L (H|R)) (append T L R))))
+% adds a clause to the definition of append.
+?((addcl ((append () L L))  0))
+% adds a second clause to the start of the definition.
+^
+^and
+?((supp_query ((econ X)(safe X)(rel X)) S) (p X S) (pp))
+and
+?((supp_query ((and (econ X) (safe X) (rel X))) S) (p X S) (pp))
+have a similar meaning and effect.
+The following example shows the advantage of the notation for default support logic conjunction using “and”:
+((suplog_expr X Y)
+	(or (economy X Y)
+	(and (safety X Y) (reliability X Y)))) : (1 1)
+^
+^ask
+?((ask ‘What is your name ?’ ‘A.N.Other’ X)(pp X))
+^
+^ask_support
+?((ask_support ‘Please enter a support for (John likes Jill)’ L U) 	(p L U))
+^
+^atomic
+atomic 42
+yes
+With the fuzzy set definition
+(myfuzzy [0:1, 1:0]) 
+the following calls succeed:
+atomic Bruce
+atomic 'one string'
+atomic “another string”
+atomic 42
+atomic 42.0
+atomic 42.3
+and the following calls fail:
+atomic myfuzzy
+atomic 'myfuzzy'
+atomic EXotic
+^
+^available_font 
+?((available_font Geneva))
+% succeeds if the Geneva font is installed.
+qh((available_font X))
+% prints a list of fonts installed on the host machine.
+^
+^await_input
+((classify X)
+	(num X)
+	(p Key with ascii code X was pressed))
+((classify (MENU ITEM))
+	(menudict MENU)
+	(p Menu item ITEM from MENU was selected))
+((classify (DLOG|REST))
+	(dlogdict DLOG)
+	(p Dialog event REST from DLOG))
+?((p Press “‘a’” to stop) (repeat) (await_input X) (classify X) (pp) (eq X 97))
+^
+^back_col
+?((back_col X) (p X))
+(0 65535 0) 	% background colour is currently green
+yes
+?((back_col 7)) 	% ... changed to white
+?((back_col (0 0 0))) 	% ... changed to black
+^
+^cd
+qh((cd X)) 
+% reports the current directory.
+cd ‘..’
+% on a Unix or Windows system changes to the directory containing the current directory;
+cd ‘::’ 
+% has the same effect on a Mac
+?((cd D) (filename D PAR DIR '') (cd PAR))
+% will always change to the directory containing the current directory (assuming one exists).
+^
+^cdict
+(fuey [2:0, 5:0.7, 8:1])
+dempster ploy
+((ploy X) (skye X)) : (0.8 1)
+((ploy X) (nomore X)) : (1 1)
+(loro (span) (raul) ... )
+((skye X) ... )
+((nomore X) ... )
+
+?((member X (fuey ploy loro skye ))
+	(if (cdict X) ((p X yes)) ((p X no)) )
+	(p '; ') (fail))
+fuey no; ploy no; loro no; skye yes;
+no
+^
+^charof
+?((charof a X) (sum X 1 Y) (charof Z Y) (pp X Y Z))
+97
+98
+b
+
+^
+^cl 
+((numbered_list X)
+	(cdict X)
+	(pp)
+	(cl ((X|ARGS)| BODY) SUPP 1 IND)
+	(p IND)
+	(p '.' ((X|ARGS)| BODY) : SUPP )
+	(pp)
+	(fail))
+((numbered_list  _ ) (p end of definition) (pp))
+
+((fred a)) : (0.9 1)
+((fred b) (vacant c)) : ((0.7 0.8) (0 0.2)) 
+
+numbered_list fred
+
+^
+^clear_current_window
+?((clear_current_window))
+^
+^close 
+?((open file1) (read file1 X) (pp X) (close file1))
+^
+^close_dialog
+?((dlogdict D) (close_dialog D) (fail))
+^
+^complement
+set (r100 0 100)	% universe = interval 0-100
+set (positive 0 pos_inf)	% universe = positive nos.
+
+(i1 [0:0 10:1 20:0] r100)	% subset of interval 0-100
+(i2 [0:0 10:1 20:0] positive)	% subset of interval 0-infinity
+(i3 [0:0 10:1 20:0])
+
+?((complement i1 X) (pp X))
+[-0.01:0 0:1 10:0 20:1 100:1 100.01:0]
+yes
+?((complement i1 X noti1) (pp X))
+[0:1 10:0 20:1 ]
+yes
+
+list noti1
+(noti1 [0:1 10:0 20:1 ] r100)
+yes
+?((complement i3 X) (pp X))
+no		% no universe defined
+^
+^con
+((test X) (con X) (pq X is a constant))
+test abc
+abc is a constant
+yes
+test 12
+no
+test ‘12’
+‘12’ is a constant
+yes
+^
+^confirm
+?((confirm ‘Do you really want to delete the knowledge base’))
+^
+^conj
+?((supp_query ((econ X)(safe X)(rel X)) S) (p X S) (pp))
+and
+?((supp_query ((conj (econ X)(safe X)(rel X))) S)
+	(p X S) (pp))
+are queries which contrast the default calculus for conjunction with “conj” in support logic programming theory. Assuming that the following support logic query,
+?((supp_query ((design X Y)) S) (p X Y S) (pp) (fail))
+returns:
+	des_1 ok (0.7 0.9)
+	des_2 ok (0.6 0.95)
+
+the following support logic inferences are derived:
+
+?((supp_query ((conj (design X Y) (design W Z))) S)
+	(p X Y W Z S) (pp) (fail))
+
+	des_1 ok des_1 ok (0.4 0.9)
+	des_1 ok des_2 ok (0.3 0.9)
+	des_2 ok des_1 ok (0.3 0.9)
+	des_2 ok des_2 ok (0.2 0.95)
+	no
+^
+^convert
+ ?((eq 123 N) (convert C N) (pq C N) (negg num C))
+'123' 123 	% succeeds
+?((eq '456.3' C) (convert C N) (pq C N) (num N))
+'456.3' 456.3 	% succeeds
+
+^
+^cos
+?((cos 3.145 C) (p C))
+-1.0
+yes
+?((cos A 0.5)
+	(times N 3.141592 A)
+	(p Angle is N * Pi))
+Angle is 0.33333 * Pi
+yes
+^
+^cprintf
+?((cprintf stdout “%s, %s %d, %02d:%02d” Saturday July 2 7 5))
+Saturday, July 2, 07:05
+yes
+The following query prints “pi” to 5 decimal places:
+?((tan X 1.0) (times X 4.0 Y)
+	(cprintf stdout “pi = %.5f” Y) )
+pi = 3.14159
+yes
+((print_supports F (L U))
+	(cprintf F “(%4.2f %4.2f)” L U))
+This procedure will write a support pair to the output
+stream F, with each support rounded to 2 decimal places.
+?((print_supports F (0.12638 0.87259) ))
+(0.13 0.87)
+yes
+^
+^cputime
+/* The following assumes that the predicate “run” has already been defined in the knowledge base:
+*/
+?((cputime SYS1 START)
+	(run)
+	(cputime SYS2 ELAPSED)
+	(p program execution time: ELAPSED seconds))
+^
+^create
+?((create file1)
+	(write file1 hello world)
+	(close file1))
+^
+^create_a
+?((create file1)
+	(write file1 hello world)
+	(close file1))
+replaces the contents (if any) of file1 with:
+
+hello
+world
+
+?((create_a file1)
+	(write file1 hello again)
+	(close file1))
+updates the contents of file1 to:
+
+hello
+world
+hello
+again
+
+^
+^create_r
+?((create_r file1) (write file1 hello world)	(filepos file1 0) (read file1 X) (pp X) (close file1) )
+^
+^create_ra
+?((create file1) (write file1 hello world) (close file1))
+replaces the contents (if any) of file1 with:
+hello
+world
+?((create_ra file1) (write file1 goodbye)) 
+changes the contents of file1 to: 
+helloworldgoodbye
+?((filepos file1 0) (read file1 X) (pp X) (close file1) )
+binds X to hello, and prints
+hello
+on the screen.
+^
+^create_window
+?((create_window NewOne 100 50 300 200 (0 0 0) 				(65535 65535 65535)) 	(p hello world))
+^
+^cscanf
+If the file f1 contains
+abc def ghi 12 22.3
+the query
+?((open f1)(cscanf f1 ‘%s %7c %d %f’ A B C D) (pq A B C D))
+prints
+abc ‘def ghi’ 12 22.3
+^
+^current_edit
+If the file fred contains
+	hello : (0.4 0.8)
+	(list of terms) : 0.7
+	unsupported allegation
+then the query
+?((file open fred)(top_window stdwnd))
+opens an edit window for the file fred, and 
+?((filesearch fred '(' ) (filepos fred START) 	(filesearch fred ')' )(filepos fred END) 
+	(current_edit fred) (highlight START END))
+^
+^current_window
+?((create_window NewOne 40 250 300 200 (0 0 0)					(65535 65535 65535))	(p hello world))
+% creates a window called NewOne, and displays the message “hello world”. 
+?((current_window X) (current_window stdwnd)	(p Hello Main Window) (current_window X) 	(p Back in X again))
+^
+^cursor_position
+?((cursor_position X Y)
+	(cursor_position 0 0)
+	(p “Up Here !”)
+	(cursor_position X Y))
+
+^
+^date
+?((date X Y) (pp X Y))
+Tue Jan 3 1995
+15:24:15
+^
+^ddict
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(small_size [0:0 10:1 20:1 30:0] )
+ddict days
+no
+ddict weekend
+yes
+ddict small_size
+no
+^
+^def
+((append () X X))
+((append (H|T) L (H|S)) (append T L S))
+% the following calls succeed:
+def append
+def (append X () Y)
+def (append (a b c) (d e) (a 1 2 3 4))
+% the following calls fail:
+def (append X Y)
+def (append (a b c) (d e) (1 2 3 4))
+^
+^default_format
+?((default_format X Y)(p (X Y) (fail))(style (plain)) (size 12)(font Times)(justify left)(width page))?((default_format style (bold italic) ) (default_format size 14))causes windows opened from now on to use 14 point bold, italic text.
+
+^
+^def_dtype
+?((def_dtype about4 {2:0.2 3:0.8 4:1 5:0.8 6:0.2}))
+yes
+p about4
+{2:0.2 3:0.8 4:1 5:0.8 6:0.2}
+
+qs((match about4  4))
+((match {2:0.2 3:0.8 4:1 5:0.8 6:0.2} 4)) : (1 1)
+no (more) solutions
+
+qs((match about4 4.2))
+((match {2:0.2 3:0.8 4:1 5:0.8 6:0.2} 4.2)) : (0 0)
+no (more) solutions
+
+^
+^def_itype
+?((def_itype about4 [2:0 3:0.8 4:1 5:0.8 6:0]))
+yes
+p about4
+[2:0 3:0.8 4:1 5:0.8 6:0]
+qs((match about4  4))
+((match [2:0 3:0.8 4:1 5:0.8 6:0] 4)) : (1 1)
+
+no (more) solutions
+
+qs((match about4 4.2))
+((match [2:0 3:0.8 4:1 5:0.8 6:0] 4.2)) : (0.8  0.8)
+no (more) solutions
+^
+^def_rel
+?((def_rel rel1 2)
+	(addcl ((rel1 a b))) 
+	(list rel1))
+^
+^delcl
+((pred a b))
+((pred b c))
+((pred a c))
+any of the following queries would remove the second clause, i.e. ((pred b c))
+delcl ((pred b c))
+delcl ((pred b X))
+delcl ((pred b | X))
+?((delcl pred 2))
+
+The following query shows the potential hazards of modifying code which is executable on backtracking:
+?((pred X Y) (pp (X Y)) (delcl ((pred b c))) (fail))
+(a b)
+(b c)
+The initial call to “pred” sets up a backtrack point to the code of the second clause. This code is executed on backtracking, but since this clause has been removed, no further solutions are found. In general, it can be difficult to predict behaviour in these circumstances and it is best to avoid programming in this style.
+^
+^delete_window
+?((wdict W) (delete_window W) (fail))
+^
+^dempdict
+(fuey [2:0, 5:0.7, 8:1])
+dempster ploy
+((ploy X) (skye X)) : (0.8 1)
+((ploy X) (pedro X)) : (1 1)
+(loro (span) (raul) ... )
+((pedro X) ... )
+
+?((member X (fuey ploy loro pedro))
+	(if (dempdict X) ((p X yes)) ((p X no)) )
+	(p '; ') (fail))
+fuey no; ploy yes; loro no; pedro no;
+no
+^
+^dempster
+dempster ploy
+((ploy X) (skye X)) : (0.8 1)
+((ploy X) (you  X)) : (1 1)
+((skye a)) : (.7 .9)
+((skye NoMore)) : (.8 .9)
+((you a)) : (.4 .6)
+
+qs((ploy X))
+
+((ploy a)) : (0.736 1)
+((ploy NoMore)) : (0.64 1)
+no (more) solutions
+^
+^dialog
+dialog ('A Dialog!' modeless 6 39 300 200
+	(static 'What is happening?' 50 3 180 15 )
+	(static Information 10 20 280 18 )
+	(edit editable 50 40 180 24 )
+	(button 'Goodbye' 210 160 80 30 (dismisses yes))
+	(button 'What time?' 110 160 90 30)
+	(button 'Do nothing' 10 160 90 30)
+	(cluster 'More buttons' 5 70 140 80)
+		(radio_button 'First choice' 10 15 120 20)
+		(radio_button 'Second choice' 10 35 120 20)
+		(radio_button 'Third choice' 10 55 120 20)
+	(check_box 'Check Me!' 160 110 90 20 )
+	(check_box 'And Me!' 160 130 80 20 )
+	(popup 'A Popup' 130 80 80 30 item1 item2 item3))
+
+?((pose_dialog 'A Dialog!' _))
+^
+^dict
+?((dict X) (kill X) (fail))
+will delete all procedures from the knowledge base (but not fuzzy sets).
+^
+^disable_dlog_item
+dialog ('A Dialog!' modeless 6 39 300 200
+	(static 'What is happening?' 50 3 180 15 )
+	(static Information 10 20 280 18 )
+	(edit editable 50 40 180 24 )
+	(button 'Goodbye' 210 160 80 30 (dismisses yes))
+	(button 'What time?' 110 160 90 30)
+	(button 'Do nothing' 10 160 90 30)
+	(cluster 'More buttons' 5 70 140 80)
+		(radio_button 'First choice' 10 15 120 20)
+		(radio_button 'Second choice' 10 35 120 20)
+		(radio_button 'Third choice' 10 55 120 20)
+	(check_box 'Check Me!' 160 110 90 20 )
+	(check_box 'And Me!' 160 130 80 20 )
+	(popup 'A Popup' 130 80 80 30 item1 item2 item3))
+defines a dialog.
+?((disable_dlog_item cluster 'A Dialog!' 'More buttons')
+	(disable_dlog_item button 'A Dialog!' 'Do nothing')
+	(pose_dialog 'A Dialog!' X))
+will display the dialog with some controls disabled: 
+^
+^disable_menu
+menu Test
+((Test Hello)(p hello from the test menu))
+?(( disable_menu Test))
+causes the Test menu to be displayed in grey, so that it does not respond to the mouse. Note that typing the query 
+?(( Test Hello))
+will still succeed and print 
+hello from the test menu
+
+^
+^disj
+Assuming that the following support logic query,
+	?((supp_query ((design X Y)) S) (p X Y S) (pp) (fail))
+returns:
+	des_1 ok (0.7 0.9)
+	des_2 ok (0.6 0.95)
+the following support logic inferences are derived:
+?((supp_query ((disj (design X Y) (design W Z))) S) (p X Y W Z S) (pp) (fail))
+
+	des_1 ok des_1 ok (0.7 1)
+	des_1 ok des_2 ok (0.7 1)
+	des_2 ok des_1 ok (0.7 1)
+	des_2 ok des_2 ok (0.6 1)
+
+	no
+^
+^division
+?((division 19 5 X) (pp X) (division 19 5 X))
+3
+yes
+?((times 5 X 19) (pp X) (times 5 X 19))
+3.8
+yes
+?((division 19 5 X) (pp X) (times 5 X 19))
+3
+no
+^
+^dlogdict
+?((dlogdict D) (close_dialog D) (fail))
+closes all user-defined dialogs.
+?((dlogdict D) (pose_dialog D X)(pp X) (fail))
+^
+^dtype
+(f1 {a:1 b:0.3 c:0.6})
+dtype f1
+yes
+dtype {c:0.2 d:1 e:0.4}
+yes
+dtype a
+no
+dtype [0:0 1:1 2:0]
+no
+^
+^dtype_name
+(dtp1 {a:0.2 b:1 c:0.7})
+?((dtype_name X dtp1) (p X is defined as dtp1) (con X))
+^
+^dtype_to_freq
+?((dtype_to_freq {a:1 b:1 c:.4 d:0] L) (p L))
+?((dtype_to_freq D ((a .6) (b .3) (c 0.1) )) (p D))
+^
+^dtype_to_list
+?((dtype_to_list {a:1 b:0.9 c:0.2} L) (p L))
+((a 1) (b 0.9) (c 0.2))
+yes
+?((dtype_to_list F ((a 1) (b 0.9) (c 0.2))) (p F))
+{a:1 b:0.9 c:0.2}
+yes
+^
+^dynamic
+(see module example)
+^
+^edict
+?((edict X) (pp X) (fail))
+displays the names of all the predicates which are exported by currently loaded modules.
+^
+^edit
+Assuming the edit window Untitled-2 is open and contains the text
+?((top_window Untitled-2)
+  (highlight 0 17) (edit copy)
+  (top_window stdwnd) (edit paste))
+hello : (0.4 0.8)
+yes
+copies the first 18 characters from Untitled-2 into the Fril window stdwnd
+^
+^editdict
+?((file open fred) (file new more))
+qh((editdict X))
+((editdict fred))
+((editdict more))
+no (more) solutions
+qh((editdict X) (files close X))
+% closes all open edit windows
+
+^
+^enable_dlog_item
+dialog ('A Dialog!' modeless 6 39 300 200
+	(static 'What is happening?' 50 3 180 15 )
+	(static Information 10 20 280 18 )
+	(edit editable 50 40 180 24 )
+	(button 'Goodbye' 210 160 80 30 (dismisses yes))
+	(button 'What time?' 110 160 90 30)
+	(button 'Do nothing' 10 160 90 30)
+	(cluster 'More buttons' 5 70 140 80)
+		(radio_button 'First choice' 10 15 120 20)
+		(radio_button 'Second choice' 10 35 120 20)
+		(radio_button 'Third choice' 10 55 120 20)
+	(check_box 'Check Me!' 160 110 90 20 )
+	(check_box 'And Me!' 160 130 80 20 )
+	(popup 'A Popup' 130 80 80 30 item1 item2 item3))
+
+?((disable_dlog_item button 'A Dialog!' 'Do nothing'))
+would disable the “Do nothing” button on the dialog
+?((disable_dlog_item button 'A Dialog!' 'Do nothing'))
+would enable it again
+^
+^enable_menu
+menu Test
+((Test Option1) (pp Hello))
+((Test Option2) (pp World))
+((Test NoMore) (pp "That's it"))
+The menu is shown in (a)
+?((disable_menu Test Option2))
+?((disable_menu Test NoMore))
+The menu is shown in (b)
+?((disable_menu Test))
+The menu is shown in (c)
+?((enable_menu Test NoMore))
+The menu is shown in (c) - since the whole menu is disabled, this query appears to have no effect
+?((enable_menu Test))
+The menu is shown in (d) - the effect of enabling the NoMore item can now be seen.
+^
+^eq
+?((eq X (a b c)) (pp X))
+(a b c)
+?((eq (H|T) (a b c)) (p H T) (pp))
+a (b c)
+?((eq (a|T) (c d e)) (p T))
+no
+((test X Y) (eq X Y)) : ((1 1) (0 0))
+(itp1 [0:0 1:1 2:0])
+(itp2 [0:.5 1.5:1 2:0])
+?((supp_query ((test itp1 itp2)) S)(pp S))
+(0.175 0.958333)
+?((supp_query ((test itp1 itp2)) S point_match)(pp S))
+(0.574163 0.574163)
+?((supp_query ((test itp1 itp2)) S poss_match)(pp S))
+(0.333333 0.875)
+^
+^errm
+?((errm y) (read X) (pp X))
+control error 131:
+no definition for read with arity 1
+(read _3)
+(failing goal)
+no
+?((errm n) (read X) (pp X))
+no
+^
+^error
+
+^
+^err_han
+When writing a new error handler it is important to ensure that it will process all possible errors. The easiest way to achieve this is to use a “catch-all” rule that passes any unchanged errors to the default error handler. The following shows the recommended form: 
+err_han new_error 	% set up new error handler 
+((new_error <N> <A> <B> <C> <D> <E>) (!) 	% trap particular error(.....))
+ ... 
+((new_error N A B C D E)
+	(error N A B C D E))	% pass all other errors on
+^
+^evlog
+>>> EXAMPLE
+^
+^exists
+((create_new_file X) (exists X) (p 'ERROR:' file X exists) (!) (fail)) 
+((create_new_file X) (create X)) 
+?((create_new_file 'c:\fril\applics\output.frl')) 
+?((create_new_file 'frildir/applics/output.frl'))
+?((create_new_file 'MacHD:Fril:Applics:output.frl'))
+Each of these queries will check first and then create a new file called “output.frl” in the relevant directory. The first case uses MS-DOS path syntax, the second uses UNIX syntax, and the third uses Mac syntax.
+^
+^exit
+((process update) ... )
+((process run) ... )
+((process quit)
+	(p 'leaving Fril system - press <Enter> to continue:')
+	(flush stdin)
+	(getb stdin _)
+	(exit 0)) 
+^
+^exp
+((multiply A B C)
+	(exp LA A) (exp LB B) (sum LA LB LC) (exp LC C))
+performs multiplication of terms A and B to produce C, via logarithms.
+^
+^expected_value
+>>> EXAMPLE
+^
+^export
+
+^
+^fail
+If append and reverse are the only predicates defined in the knowledge base, then 
+?((dict X) (pp X) (fail)) 
+produces
+append
+reverse
+no 
+^
+^fdict
+((extended_fril) 
+	(fdict _) (!) (p This is an extended version of Fril)) 
+“extended_fril” succeeds or fails according to whether or not there are foreign language procedures available.
+^
+^file
+?((file new Fred))
+creates an edit window “Fred”
+?((editdict X)(file save X))
+saves the contents of all open edit windows.
+^
+^filebcopy
+?((create file1) (filebcopy stdin file1 '.') (close file1)) 
+will copy all input typed at the keyboard to the file “file1” until a full stop is encountered. 
+?((open file1) (create file2) (filebcopy file1 file2 10) (close file2)) 
+will copy the first ten bytes of file1 into file2.
+If the file “fred” contains
+	hello : (0.4 0.8)
+	(list of terms) : 0.7
+	unsupported allegation
+then the query
+?((file open fred)
+	(filesearch fred ':') 
+	(filepos fred X)
+	(filesearch fred ')')
+	(filepos fred Y)
+	(top_window fred)
+	(highlight X Y))
+will highlight the support pair on the first line.
+^
+^filename
+An MS-DOS example: 
+?((filename F 'c:\fril\library' fs frl) (pq F)) 'c:\fril\library\fs.frl' 
+yes 
+A UNIX example: 
+?((filename '/mnt1/ren00p/prog.frm' P R E) (pq P R E)) 
+'/mnt1/ren00p' prog frm 
+yes
+A Mac example: 
+?((cd X)(filename F X test frl)(ppq F))
+'Mac HD:Fril Folder:test.frl'
+yes
+^
+^filepos
+?((open file1) (filepos file1 X) (p X)) 
+0 
+yes
+the offset is zero on first opening the file.
+?((filepos file1 20)) 
+will move the offset to 20.
+If the file “fred” contains
+	hello : (0.4 0.8)
+	(list of terms) : 0.7
+	unsupported allegation
+then the query
+?((file open fred)
+	(filesearch fred ':') 
+	(filepos fred X)
+	(filesearch fred ')')
+	(filepos fred Y)
+	(top_window fred)
+	(highlight X Y))
+will highlight the support pair on the first line.
+^
+^filesearch
+((search_file F C) (open F) (filesearch F C) (!) (p constant C found in file F) (pp) (close F)) ((search_file F C) (p constant C not found in file F) (close F)) 
+^
+^findall
+((test a b a)) 
+((test d e f)) 
+((test g h g)) 
+?((findall (X Y) ((test X Y Z) (eq X Z)) L) (p L)) 
+((a b) (g h)) 
+yes 
+^
+^find_file
+?((cd X) (find_file 'test.frl') (file open 'test.frl') (cd X))
+% askes the user to find the file “test.frl”, opens it, and resets the Fril current directory to its previous value.
+^
+^flush
+((get_char X)
+	(p input?)
+	(flush stdin) 
+	(get stdin X))
+?((get_char X)(pp X))
+Without the call to flush, it is possible that get_char will pick up spurious input.
+^
+^forall
+((member X (X|_) )) 
+((member X (_|Y) ) (member X Y)) 
+?((forall ((member X (a b c) )) ((con X) (p con X) (pp)) )) con a 
+con b 
+con c 
+yes 
+?((forall ((member X (1 2 3) )) ((less Y 3)) )) 
+no
+^
+^format
+?((format X Y)(p (X Y) (fail))
+(style (plain)) (size 12)(font Times)(justify left)(width page))
+
+?((format style (bold italic)) (format size 14) (p Hello) (format style plain)
+	 (p there) (format size 18) (p Large ) (format size 10) (p Small ))
+HellothereLargeSmall
+^
+^fset
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(small_size [0:0 10:1 20:1 30:0] )
+
+fset days
+fset weekend
+fset small_size
+fset [0:0 1:1 2:0]
+all succeed.
+fset hello
+fails.
+^
+^fsetdict
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(small_size [0:0 10:1 20:1 30:0] )
+ddict days
+no
+ddict weekend
+yes
+ddict small_size
+no
+^
+^fset_name
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(small_size [0:0 10:1 20:1 30:0] )
+
+qh((fset_name F small_size))
+((fset_name small_size [0:0 10:1 20:1 30:0]))
+no (more) solutions
+
+qh((fset_name F days))
+
+((fset_name days {Fri:1 Sat:1 Sun:1 Thurs:1 Weds:1 Tues:1 Mon:1}))
+^
+^gen
+(
+((h2) (gen conj
+	( ((b1)) ((b2)) ((b3)) ((b4)) )
+	( (0.5 0.7) (0.2 0.9) (0.3 0.5) (0.7 0.8) ) )) : ((1 1) (0 0))
+
+((b1)) : (0.1 0.2)
+((b2)) : (0.3 0.4)
+((b3)) : (0 0.6)
+((b4)) : (0 1)
+
+qs((h2))
+((h2)) : (0.28 0.83)
+no (more) solutions
+^
+^general
+((h) (general
+	( ((b1)) ((b2)) ((b3)) ((b4)) )
+	( (0.5 0.7) (0.2 0.9) (0.3 0.5) (0.7 0.8) ) )) : ((1 1) (0 0))
+
+((b1)) : (0.1 0.2)
+((b2)) : (0.3 0.4)
+((b3)) : (0 0.6)
+((b4)) : (0 1)
+qs((h))
+((h)) : (0.28 0.83)
+no (more) solutions
+^
+^gensym
+?((gensym help X) (pq X) (fail)) 
+help1
+no
+?((repeat) (gensym help X) (pq X) (p ' ') (fail)) 
+prints the following endless sequence, which can only be terminated by pressing the interrupt key. 
+help2 help3 help4 help5 help6 help7 help8 ... etc.
+?((gensym newhelp X) (pq X) (fail)) 
+newhelp1
+no 
+^
+^get
+?((get stdin X) (pp X))
+will read the next non-space character typed at the terminal, and display its ASCII value.
+^
+^getb
+?((getb stdin X) (pp X))
+reads the next character typed at the terminal, and displays its ASCII value. If the query is typed from top level the next character will be the <CR> just typed.
+^
+^getenv
+?((getenv frhelp X) (p X)) 
+c:\fril\help 
+yes 
+(this is an MS-DOS filename)
+^
+^getk
+((finished) (p press q to quit, any other key to continue)(flush stdin) (getk X) (eq X 113))
+% 113 is the ASCII code for ‘q’
+% integ generates successive integers on backtracking
+((integ 0))
+((integ X) (integ Y) (sum Y 1 X))
+
+?((integ X) (pp X) (finished))
+?((integ X) (pp X) (finished))
+0
+press q to quit any other key to continue
+<c pressed>
+1
+press q to quit any other key to continue
+<q pressed>
+yes
+
+^
+^get_directory
+?((cd ORIG) (get_directory NEW) (cd NEWD) (cd ORIG) (p directory NEW chosen in NEWD) )
+^
+^get_dlog_val
+% Using the dialog example given for the “dialog” built-in predicate, and assuming that the text 'Some Text' has been entered into the edit box
+?((get_dlog_val cluster 'A Dialog!' 'More buttons' X) (pq X))
+'First choice'
+
+?((get_dlog_val edit 'A Dialog!' editable X) (pq X))
+'Some Text'
+yes
+
+?((get_dlog_val check_box 'A Dialog!'  'And Me!' X) (pq X))
+on
+yes
+?((set_dlog_val button 'A Dialog!' 'Do nothing' Disregard))
+yes
+?((get_dlog_val button 'A Dialog!' 'Do nothing' X) (pq X))
+Disregard
+yes
+
+?((get_dlog_val popup 'A Dialog!' 'A Popup' X) (pq X))
+item1
+yes
+^
+^get_filename
+?((get_filename X) (file open X))
+displays a dialog as shown and returns the name of the selected file.
+To obtain the full pathname of the file, a query of the form
+?((get_filename X) (cd D) (filename F D X '') (file open F))
+could be used.
+^
+^get_prior
+set (abcDomain (a b c) ((a 0.4) (b 0.2) (c 0.4)))
+set (tenDomain 0 10)
+?((fsetdict F)(pp)(pq F)(get_prior F X)(p)(p has prior X)(fail))
+
+^
+^get_univ
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(small_size [0:0 10:1 20:1 30:0] )
+
+((fuzz X) (ddict X))
+((fuzz X) (idict X))
+((report F) (get_univ F U) (!) (pq F has universe U))
+((report F) (pq F has no universe))
+?((fuzz F) (report F) (pp) (fail))
+weekend has universe days
+small_size has no universe
+no
+^
+^help
+help cl 
+help help
+help arith
+^
+^help_example
+help_example sum
+^
+^hide_window
+Assuming that the Fril window w2 and edit window w1 (and no others) have been created, the query 
+?((top_window w2) (top_window w1)) 
+will bring w1 to the top of the screen with w2 immediately below it and stdwnd at the bottom of the stack (i.e. order w1, w2, stdwnd). The command 
+hide_window w1 
+will then put w1 to the bottom and make w2 the topmost window (i.e. order: w2, stdwnd, w1). The command
+hide_window stdwnd
+will now make the order: w2, w1, stdwnd; but w2 will remain the current window.
+^
+^highlight
+If the file “fred” contains
+	hello : (0.4 0.8)
+	(list of terms) : 0.7
+	unsupported allegation
+then the query
+?((file open fred)
+	(filesearch fred ':') 
+	(filepos fred X)
+	(filesearch fred ')')
+	(filepos fred Y)
+	(top_window fred)
+	(highlight X Y))
+will highlight the support pair on the first line.
+^
+^idict
+(high [70:0 80:1 90:0])
+(average [50:0 60:1 70:1 80:0]) 
+?((idict X) (pq X defined as) (p X) (pp) (fail)) 
+average defined as [50:0 60:1 70:1 80:0] 
+high defined as [70:0 80:1 90:0] 
+no
+^
+^if
+?((member N (0 1 2 3)) 
+  (if (eq N 1) ((p one man) (pp)) 
+                     ((p N men) (pp)) )
+   (fail)) 
+prints the following: 
+0 men 
+one man 
+2 men 
+3 men 
+no 
+^
+^import
+(see module example)
+^
+^inform
+?((inform 'That file does not exist'))
+^
+^init_random
+init_random 22
+^
+^int
+((valid X) (int X) (!))
+((valid X)
+	(negg int X)
+	(p X unrecognised - please type an integer)
+	(fail))
+
+valid Hello
+Hello unrecognised - please type an integer
+no
+
+valid 22.3
+22.3 unrecognised - please type an integer
+no
+
+valid 12
+yes
+^
+^intersection
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(itp1 [1:0 2:1 2.5:0])
+
+?((intersection [0:0 1:1 2:1 3:0] itp1 X)(pp X))
+[1:0 2:1 2.5:0]
+yes
+
+?((intersection [10:0 11:1 12:0] itp1 X)(pp X))
+no
+
+?((intersection [0:0 1:1 2:0.5 2.5:0] {1:1 2:1 3:1} X)(pp X))
+{1:1 2:0.5}
+
+?((intersection weekend {Thurs:0.8 Fri:1} X) (pp X))
+{Fri:0.8}
+^
+^intok
+?((pp) (repeat) (intok stdin X) (pq X) (pspaces 3) (fail)) 
+[0:0 1:1] hello 'a string' 123.45, and(a list(with nests) VAR
+'[' 0 : 0 1 : 1 ']' hello 'a string' 123.45 and '(' a list '(' with nests ')' _5 
+The input would have to be stopped by typing the appropriate interrupt key.
+^
+^isall
+((test a b a))
+((test d e f))
+((test g h g))
+?((isall L (X Y) (test X Y Z) (eq X Z)) (p L))
+((g h) (a b))
+yes
+^
+^itype
+(itp1 [0:0 1:1 2:0])
+itype itp1
+yes 
+itype [0:0 1:1 2:1 3:0]
+yes
+itype abc
+no
+^
+^itype_name
+(itp1 [0:0 1:1 2:0])
+?((itype_name X itp1) (p X) (p itp1) (con X))
+itp1 [0:0 1:1 2:0]
+yes
+^
+^itype_to_freq
+?((itype_to_freq [0:0 1:1 2:.4 3:0] L) (p L))
+?((itype_to_freq I ((0 0) (1 1) (2 0.4) (3 0))) (p I))
+^
+^itype_to_list
+?((itype_to_list [0:0 1:1 2:.4 3:0] L) (p L))
+((0 0) (1 1) (2 0.4) (3 0))
+yes
+?((itype_to_list I ((0 0) (1 1) (2 0.4) (3 0))) (p I))
+[0:0 1:1 2:0.4 3:0]
+yes
+^
+^kb_garbage
+?((kb_garbage))
+^
+^kill
+?((dict X) (kill X) (fail))
+no	% removes all procedure definitions
+?((mdict X) (kill X) (fail))
+no	% removes all current modules
+^
+^less
+((greater X Y) (less Y X))
+?((less 1 2))
+yes 
+?((greater 1 2))
+no
+?((greater bcd abc))
+yes
+?((less bcd abc))
+no
+^
+^less_eq
+?((less 1 2))
+?((less_eq 1 2))
+both succeed
+?((less_eq 2 2))
+succeeds, but
+?((less 2 2))
+fails
+
+^
+^list
+((append () X X)) 
+((append (H|T) L (H|S)) (append T L S)) 
+list append 
+((append () _21 _21)) 
+((append (_28| _27) _20 (_28| _30)) (append _27 _20 _30))
+^
+^listfile
+Assuming the usual definition of append, the query
+?((listfile 'new_file.frl' append)) 
+causes the following listing to be written to file new_file.frl: 
+((append () _21 _21)) 
+((append (_28| _27) _20 (_28| _30)) (append _27 _20 _30))
+^
+^lload
+Assuming that files expert.frl and vision.frm, are in the current directory, fs_list.frl is in the FRLIB directory, but perfect.* does not exist, 
+lload (expert fs_list vision perfect) 
+prints the following: 
+loading expert ... completed 
+loading fs_list ... completed 
+loading vision ... completed 
+loading perfect ... 
+<control error 150> : unable to access file perfect (load perfect) 
+(failing goal) 
+yes
+^
+^load
+ Assume that all the following files exist in the current search path: 
+kb1.frl contains definitions for clauses “clse1”, “clse2” and “mod”, relation “rel1”, and named itype “itp1”; and mod.frm exports “clse1” and “clse3”. Fril has just been invoked so that there are currently no procedure or fuzzy set definitions or any modules. 
+load kb1 
+will add definitions to the knowledge base for “clse1”, “clse2”, “mod”, “rel1” and “itp1”. 
+load 'kb1.frl' 
+will add the same procedure definitions to the knowledge base, so that there will now be two copies of “clse1”, “clse2”, and “mod”. The relation “rel1” will have been updated to include the effect of the supports being added in again. The named itype, “itp1”, will cause an “illegal redefinition” error message. 
+load mod 
+will cause an “illegal redefinition” error message for “mod” and “clse1”, and the module will not be loaded. 
+?((kill mod) (kill clse1) (load mod)) 
+will kill the existing definitions for “mod” and “clse1”, and the module mod.frm will successfully load. Only the following non-variable dictionary queries will now succeed: mdict mod
+cdict clse2
+rdict rel1
+idict itp1
+edict clse1
+edict clse3.
+^
+^lreload
+Assuming that files expert.frl and vision.frm, are in the current directory, fs_list.frl is in the FRLIB directory, but perfect.* does not exist, 
+lreload (expert fs_list vision perfect) 
+prints the following: 
+reloading expert ... completed 
+reloading fs_list ... completed
+ reloading vision ... completed
+ reloading perfect ... 
+<control error 150> : unable to access file perfect (reload perfect) 
+(failing goal) 
+yes
+^
+^match
+(itp1 [1:0 2:1 3:1 4:0])
+(itp2 [2:0 4:1 5:0])
+(dtp1 {1:0.5 2:1 3:1 4:0.2})
+?((supp_query ((match itp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((match dtp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((match 2 itp1)) S) (pp S))
+(0 1)
+yes
+?((supp_query ((match 2 dtp1)) S) (pp S))
+(0 1)
+yes
+?((supp_query ((match itp2 dtp1)) S) (pp S))
+(0.5 0.6)
+yes
+?((supp_query ((match itp1 itp2)) S) (pp S))
+(0 0.75)
+yes
+?((supp_query ((match 2 3)) S) (pp S))
+(0 0)
+yes
+?((supp_query ((match crisp crisp)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((match (X|Y) (1 2 3) )) S)
+(p X Y support S) (pp))
+1 (2 3) support (1 1)
+yes
+^
+^maximise_frame
+?((maximise_frame) (zoom_top_window out))
+will give the largest possible display area on a Windows 3.1 system, and expand the top window to fill the area.
+^
+^max_window_pos
+((bottom_right_window NAME WID HT)
+	(max_window_pos XMAX YMAX)
+	(sum XPOS WID XMAX)
+	(sum YPOS HT YMAX)
+	(create_window NAME XPOS YPOS WID HT 0 7))
+will, given a constant and two integers, create a new window named NAME, of width WID and height HT, positioned at the bottom right of the screen. NB a robust version of this predicate would require calls to check that NAME is a constant, and WID and HT are “sensible” values.
+^
+^max_window_size
+((biggest_window NAME)
+	(min_window_pos XMAX YMAX)
+	(max_window_size XSIZ YSIZ)
+	(create_window NAME XMAX YMAX XSIZ YSIZ 0 7))
+will, given a constant argument, create a new window named NAME, positioned at the top left of the screen, extending over the whole screen. NB a robust version of this predicate would require calls to check that NAME is a constant, and does not already name a window.
+^
+^mdict
+((list_mods) (mdict X) (pp X) (fail)) 
+((list_mods))
+?((list_mods)) prints out the names of all currently loaded modules.
+^
+^menu
+menu Test
+((Test Hello) (inform "Hello World"))
+((Test Support)
+	(ask_support "Are you ready?" X Y)
+	(p ready with support (X Y)))
+((Test -))
+((Test Append) (qh ((append X Y (a b c))) ))
+^
+^menudict
+?((menudict X) (kill X) (fail))
+will delete all menu procedures from the knowledge base, and remove all user-defined menus from the menu bar. 
+^
+^min_window_pos
+((top_left_window NAME WID HT)
+	(min_window_pos XMIN YMIN)
+	(create_window NAME XMIN YMIN WID HT 0 7))
+will, given a constant and two integers, create a new window named NAME, of width WID and height HT, positioned at the top left of the screen. NB a robust version of this predicate would require calls to check that NAME is a constant, and WID and HT are “sensible” values.
+^
+^min_window_size
+((shrink_windows)
+	(min_window_size X Y)
+	(wdict W)
+	(resize_window W X Y)
+	(fail))
+((shrink_windows))
+
+?((shrink_windows))
+will resize all Fril windows to the minimum size. An improvement to this definition could also reposition windows to tile the screen
+^
+^module
+?((module 'prog.frl' 'prog.frm')) 
+or 
+?((module prog prog)) 
+both translate the Fril source file prog.frl into the compiled module prog.frm (assuming no errors are generated).
+^
+^module_initialisation
+?((module 'prog.frl' 'prog.frm')) 
+or 
+?((module prog prog)) 
+both translate the Fril source file prog.frl into the compiled module prog.frm (assuming no errors are generated).
+^
+^move_dialog
+dialog ('A Dialog!' modeless 6 39 300 100
+	(static 'What is happening?' 50 3 180 15 )
+	(static Information 10 20 280 18 )
+	(edit editable 50 40 180 20 )
+	(button 'Goodbye' 110 65 80 30 (dismisses yes)))
+
+((centralise SIZE MIN MAX NEW)
+	(sum MIN MAX AVAIL)
+	(sum POS SIZE AVAIL)
+	(times NEW 2 POS))
+
+((centralise_dialog NAME X Y)
+	(min_window_pos XMIN YMIN)
+	(max_window_pos XMAX YMAX)
+	(centralise X XMIN XMAX XNEW)
+	(centralise Y YMIN YMAX YNEW)
+	(move_dialog NAME XNEW YNEW))
+
+?((centralise_dialog 'A Dialog!’ 300 200) (pose_dialog 'A Dialog!' _))
+^
+^move_window
+?((max_window_pos X Y)
+	(move_window stdwnd X Y) (p Max X Y))
+Max 828 620
+yes
+
+?((min_window_pos X Y)
+	(move_window stdwnd X Y) (p Min X Y))
+Min 4 24
+yes
+moves the window stdwnd to its bottom rightmost position and its top leftmost position on the screen, respectively.
+^
+^name
+?((name X fred) (pp X)) 
+(102 114 101 100) 
+yes 
+?((name (49 50) X) (ppq X) (int X)) 
+'12'
+no 
+X is instantiated to the constant '12', rather than the integer 12.
+?((name (49 50) X) (convert X XINT) (int XINT) (ppq X XINT))
+'12'
+12
+yes
+
+^
+^neg
+Assuming append is defined so that 
+?((append (a b) (c d) L) (pp L)) succeeds printing (a b c d), then 
+?((append (a b) (c d) L) (neg (eq L (a b c))) (pp L)) 
+also succeeds printing (a b c d), whilst 
+?((append (a b) (c d) L) (neg (eq L (a b c d))) (pp L)) 
+fails. 
+^
+^negg
+Assuming that append is defined so that 
+?((append (a b) (c d) L) (pp L)) succeeds printing (a b c d), then 
+?((append (a b) (c d) L) (negg eq L (a b c)) (pp L))
+also succeeds printing (a b c d), whilst 
+?((append (a b) (c d) L) (negg eq L (a b c d)) (pp L))
+fails.
+^
+^nospy
+spy first_pred 
+spy second_pred 
+?((spying X) (pp X) (fail)) 
+first_pred 
+second_pred 
+no 
+?((nospy first_pred) (nospy dummy)) 
+yes 
+?((spying X) (pp X) (fail)) 
+second_pred 
+no
+^
+^not
+((reliable component)) : (0.6 0.8) 
+qs((not reliable component)) 
+((not reliable component)) : (0.2 0.4) 
+no (more) solutions 
+yes
+^
+^num
+((valid_input X) (num X)) 
+valid_input 23.0
+yes
+valid_input abc
+no 
+^
+^oh
+oh ((append X Y (a b c) )) 
+((append () (a b c) (a b c))
+next? (y/n) 
+y 
+((append (a) (b c) (a b c))
+next? (y/n) 
+n 
+no (more) solutions 
+yes
+^
+^open
+?((open file1) (read file1 X) (pp X) (close file1)) 
+reads the first term from file1, and prints it on the screen.
+^
+^or
+?((supp_query ((design X Y)) S) (p X Y S '; ') (fail)) 
+des_1 ok (0.144 0.453) ; des_2 ok (0.399 0.760) ; 
+no 
+?((supp_query ((or (design X Y) (design W Z))) S)
+	(p X Y W Z S) (pp) (fail)) 
+des_1 ok des_1 ok (0.267 0.701) 
+des_1 ok des_2 ok (0.485 0.869) 
+des_2 ok des_1 ok (0.485 0.869) 
+des_2 ok des_2 ok (0.639 0.942) 
+no
+^
+^orr
+?((orr ((eq 1 2) (pp wrong))
+	((eq 2 3) (p wrong again) (pp)) 
+	((eq 3 3) (p right this time) (pp))
+	((eq 4 4) (p right again) (pp) (fail))
+	((eq 5 5) (p and again) (pp)) ) 
+   (pp here) (fail)) 
+right this time
+here
+right again
+and again
+here
+no
+^
+^os
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+os ((test X) (test Y)) 
+interacts with the user as follows: 
+((test a) (test a)) : (0.25 0.64) ...next ? (y/n)
+ y 
+((test a) (test b)) : (0.35 0.72) ...next ? (y/n) 
+n 
+no (more) solutions 
+yes
+^
+^osc
+set (abcDomain  (a b c))
+(mostlyA {a:1 b:.2} abcDomain)
+(mostlyB {a:.3 b:1 c:.2} abcDomain)
+((test mostlyA )) : (0.5 0.8) 
+((test mostlyB )) : (0.7 0.9) 
+osc ((test X)) 
+>>> EXAMPLE >>>
+^
+^ose
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+os ((test X) (test Y)) 
+interacts with the user as follows: 
+((test a) (test a)) : (0.25 0.64) ...next ? (y/n)
+ y 
+((test a) (test b)) : (0.35 0.72) ...next ? (y/n) 
+n 
+no (more) solutions 
+yes
+>>> EXAMPLE >>>
+^
+^osv
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+os ((test X) (test Y)) 
+interacts with the user as follows: 
+((test a) (test a)) : (0.25 0.64) ...next ? (y/n)
+ y 
+((test a) (test b)) : (0.35 0.72) ...next ? (y/n) 
+n 
+no (more) solutions 
+yes
+>>> EXAMPLE >>>
+^
+^p
+(fuz [0:0 1:1 2:0]) 
+?((p fred fuz “string 1”)) 
+fred [0:0 1:1 2:0] string 1
+^
+^peek
+((open file1)
+	(peek file1 X)
+	(eq X 40)
+	(read file1 LIST)
+	(process LIST))
+checks the first character in file1, and if it is an opening bracket (ASCII 40), reads the first term in the file and passes it to “process”.
+^
+^peekb
+((skip STREAM CHAR) 
+	(peekb STREAM INCHAR) 
+	(eq INCHAR CHAR) 
+	(getb STREAM _)
+	(skip STREAM CHAR)) 
+“skip” ignores all characters with ASCII code bound to CHAR, on the input stream bound to STREAM, and fails when a different character is detected. This character is then available to the next input operation on the stream.
+?((skip stdin 97))
+ignores all input until an “a” is pressed
+^
+^peekk
+Compare the following two queries when given the input
+hello
+?((flush stdin) (peekk X) (putb stdout X) (p) (r Y) (p Y))
+?((flush stdin) (peekb stdin X) (putb stdout X) (p) (r Y) (p Y))
+The first query will cause the following to appear in the output window: 
+h 
+hello
+hello
+yes
+(the first, third, and last lines are output)
+After the second query, the output window will contain:
+hello
+h hello
+yes
+(the second and third lines are output).
+In the first case, the goal (peekk X) succeeded as soon as the “h” was typed, and then (putb stdout X) and (p) succeeded printing the character to the standard output followed by a space. However, the character was still available to be read and printed by (r Y) and (p Y). In the second case, the goal (peekb stdin X) could not succeed until a carriage return had been typed, putting the input in the buffer and making it available to be inspected by “peekb”. Not until then could the goals (putb stdout X) and (p) be called, and so all the output appeared on the same line.
+^
+^pen_col
+((alternate_p X)
+	(stringof S X)
+	(alt_p_red S)) 
+((alternate_p X) (pen_col (0 0 0)) 
+((alt_p_blue (X|Y) )
+	(pen_col (0 0 65535))
+	(p X)
+	(alt_p_red Y))
+((alt_p_red (X|Y))
+	(pen_col (65535 0 0))
+	(p X)
+	(alt_p_blue Y))
+“alternate_p” will succeed by printing a constant to the standard output with the colours of the characters alternating between blue (0 0 65535) and red (65535 0 0). At the end of the query, the pen colour will be reset to black (0 0 0).
+This example will not work as intended under Windows 3.1
+^
+^point_match
+(itp1 [1:0 2:1 3:1 4:0])
+(itp2 [2:0 4:1 5:0])
+(dtp1 {1:0.5 2:1 3:1 4:0.2})
+?((supp_query ((point_match itp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((point_match dtp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((point_match 2 itp1)) S) (pp S))
+(0 0)
+yes
+?((supp_query ((point_match 2 dtp1)) S) (pp S))
+(1 1) >>> and here
+yes
+?((supp_query ((point_match itp2 dtp1)) S) (pp S))
+(0.25 0.25) >>> SOMETHING WRONG BECAUSE INTERVAL IS (0.5 0.6)
+yes
+?((supp_query ((point_match itp1 itp2)) S) (pp S))
+(0.285375 0.285375)
+yes
+?((supp_query ((point_match 2 3)) S) (pp S))
+(0 0)
+yes
+?((supp_query ((point_match crisp crisp)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((point_match (X|Y) (1 2 3) )) S)
+(p X Y support S) (pp))
+1 (2 3) support (1 1)
+yes
+^
+^pose_dialog
+dialog ('A Dialog!' modeless 6 39 300 100
+	(static 'What is happening?' 50 3 180 15 )
+	(static Information 10 20 280 18 )
+	(edit editable 50 40 180 20 )
+	(button 'Goodbye' 110 65 80 30 (dismisses yes)))
+?((pose_dialog 'A Dialog!'  X)(pp X))
+modeless
+yes
+^
+^poss_match
+(itp1 [1:0 2:1 3:1 4:0])
+(itp2 [2:0 4:1 5:0])
+(dtp1 {1:0.5 2:1 3:1 4:0.2})
+?((supp_query ((poss_match itp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((poss_match dtp1 2)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((poss_match 2 itp1)) S) (pp S))
+(0 1)
+yes
+?((supp_query ((poss_match 2 dtp1)) S) (pp S))
+(0 1)
+yes
+?((supp_query ((poss_match itp2 dtp1)) S) (pp S))
+(0 0.5)
+yes
+?((supp_query ((poss_match itp1 itp2)) S) (pp S))
+(0 0.666667)
+yes
+?((supp_query ((poss_match 2 3)) S) (pp S))
+(0 0)
+yes
+?((supp_query ((poss_match crisp crisp)) S) (pp S))
+(1 1)
+yes
+?((supp_query ((poss_match (X|Y) (1 2 3) )) S)
+(p X Y support S) (pp))
+1 (2 3) support (1 1)
+yes
+^
+^power
+?((power 2 3 8)) 
+yes 
+?((power -0.16 -2 X) (p X)) 
+39.063 
+yes 
+?((power 10 X 256) (p X)) 
+2.4082 
+yes
+^
+^pp
+(fuz [0:0 1:1 2:0])
+?((pp fred fuz “string 1”))
+fred
+[0:0 1:1 2:0]
+string 1
+^
+^ppq
+(fuz [0:0 1:1 2:0])
+?((ppq fred fuz “string 1”))
+fred
+fuz
+'string 1'
+^
+^pq
+(fuz [0:0 1:1 2:0])
+?((pq fred fuz “string 1”))
+fred fuz 'string 1'
+^
+^prlen
+((list_prlen () 1)) 
+((list_prlen (X|Y) N)
+	(prlen X NX) 
+	(sum NX 1 NX1)
+	(list_prlen Y NY)
+	(sum NX1 NY N)) 
+?((eq (fred 'a string' X [0:0 1:0.5 3:1] 23 45.76) L)
+	(pp)
+	(list_prlen L N) 
+	(pp L) 
+	(p has print length N))
+(fred a string _23a [0:0 1:0.5 3:1] 23 45.76) 
+has print length 51 
+yes 
+^
+^pspaces
+?((p start) (pspaces 11) (pp finish))
+start           finish
+yes
+^
+^putb
+?((p start) (putb stdout 10) (p finish))
+start
+finish
+yes
+^
+^qh
+Assume that append and length are defined in the usual way, to append two lists together and determine the length of a list, respectively. 
+qh ((append X Y (a b c)) (length X N) (less N 2)) 
+((append () (a b c) (a b c))(length () 0)(less 0 2)) 
+((append (a) (b c) (a b c))(length (a) 1)(less 1 2)) 
+no (more) solutions 
+yes
+^
+^qs
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+qs ((test X) (test Y)) 
+((test a) (test b)) : (0.25 0.64) 
+((test a) (test b)) : (0.35 0.72) 
+((test b) (test a)) : (0.35 0.72) 
+((test b) (test b)) : (0.49 0.81) 
+no (more) solutions 
+yes
+^
+^qsc
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+qs ((test X) (test Y)) 
+((test a) (test b)) : (0.25 0.64) 
+((test a) (test b)) : (0.35 0.72) 
+((test b) (test a)) : (0.35 0.72) 
+((test b) (test b)) : (0.49 0.81) 
+no (more) solutions 
+yes
+>> EXAMPLE
+^
+^qse
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+qs ((test X) (test Y)) 
+((test a) (test b)) : (0.25 0.64) 
+((test a) (test b)) : (0.35 0.72) 
+((test b) (test a)) : (0.35 0.72) 
+((test b) (test b)) : (0.49 0.81) 
+no (more) solutions 
+yes
+>> EXAMPLE
+^
+^qsv
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+qs ((test X) (test Y)) 
+((test a) (test b)) : (0.25 0.64) 
+((test a) (test b)) : (0.35 0.72) 
+((test b) (test a)) : (0.35 0.72) 
+((test b) (test b)) : (0.49 0.81) 
+no (more) solutions 
+yes
+>> EXAMPLE
+^
+^r
+?((r X) (p term input was X) (pp)) 
+fred 
+term input was fred 
+yes
+^
+^random
+qh((random X))
+((random 0.513871))
+/* rand_list I L creates a list L of I random numbers */
+((rand_list 0 ()) (!))
+((rand_list C (R|T)) (random R) (sum C1 1 C) (rand_list C1 T)) 
+
+?((rand_list 5 X)(pp X))
+(0.702231 0.226417 0.494766 0.124699 0.0838954)
+yes
+?((rand_list 5 X)(pp X))
+(0.38963 0.27723 0.368053 0.983459 0.535386)
+yes
+^
+^rdict
+?((rdict X) (pp X) (fail)) 
+prints all the relation names in the knowledge base. 
+(fuey [2:0, 5:0.7, 8:1]) 
+dempster dag 
+((dag X) (loro X)) : (0.8 1) 
+((dag X) (pedro X)) : (1 1) 
+(loro (span) (raul) ... ) ... 
+((pedro X) ... ) ... 
+?((member X (fuey dag loro pedro))
+	if (rdict X) ((p X yes)) ((p X no)) ) 
+	(p '; ')
+	(fail)) 
+fuey no; dag no; loro yes; pedro no; no
+^
+^read
+If the file “fred” contains 
+hello (list of terms) 
+the query 
+?((open fred) (read fred X) (read fred Y) (pp X Y)) 
+produces 
+hello 
+(list of terms)
+yes
+^
+^read_suppterm
+If the file “fred” contains
+hello : (0.4 0.8)
+(list of terms) : 0.7
+unsupported allegation
+and is opened using the query 
+?((open fred))
+then repeated execution of the query
+?((read_suppterm fred X S) (p X with support S)) 
+produces
+hello with support (0.4 0.8)
+(list of terms) with support 0.7
+unsupported with support ((1 1) (0 1))
+allegation with support ((1 1) (0 1))
+^
+^reload
+Assume that all the following files exist in the current search path: kb1.frl contains definitions for clauses “clse1”, “clse2” and “mod”, relation “rel1”, and named itype “itp1”; kb2.frl contains definitions for “clse1” and relation “rel1”; and mod.frm exports “clse1” and “clse3”. Fril has just been invoked so that there are currently no procedure or fuzzy set definitions or any modules. reload kb1 will add definitions for “clse1”, “clse2”, “mod”, “rel1” and “itp1” to the knowledge base. reload 'kb2.frl' will replace the definitions for “clse1” and “rel1” by those contained in the file kb2.frl. All other definitions will remain the same. reload mod will reload the module mod.frm, and in so doing will delete from the knowledge base the procedure definitions for “clse1” and “mod”. Only the following non-variable dictionary queries will now succeed: “mdict mod”, “cdict clse2”, “rdict rel1”, “idict itp1”, “edict clse1” and “edict clse3”. reload kb2 will remove “clse1” from the export dictionary and add a new definition of the predicate to the knowledge base, and replace the existing definition of “rel1” with a new one. Now, only the following non-variable dictionary queries will succeed: “mdict mod”, “cdict clse1”, “cdict clse2”, “rdict rel1”, “idict itp1” and “edict clse3”. reload kb1 will kill the module mod.frm altogether in order to add the new definition for “mod” to the knowledge base, and this in turn will remove the predicate “clse3” from the export dictionary. The definitions for “clse1” and “rel1” will be replaced with new definitions. Now, only the following non-variable dictionary queries will succeed: “cdict clse1”, “cdict clse2”, “rdict rel1”, “idict itp1”
+^
+^remainder
+?((remainder 19 5 X) (pp X)) returns 4 
+?((remainder 19 5.0 X) (pp X)) returns 4 
+?((remainder 19.0 5 X) (pp X)) returns 4 
+?((remainder 19.4 4.9 X) (pp X)) returns 4.7
+^
+^repeat
+((integ 0))
+((integ X) (integ Y) (sum Y 1 X))
+?((repeat) (integ N) (p N '') (less_eq 5 N))
+0 1 2 3 4 5 
+yes
+?((create file1) (repeat) (read stdin X) (write file1 X) (eq X '.') (close file1)) 
+opens file “file1”, reads terms from the standard input and writes each on a new line in “file1”, until a full stop is typed. Finally “file1” is closed.
+^
+^resize_window
+?((create_window Hello 50 50 180 180 0 7) (p Hello World))
+creates a window as shown in (a) below. To make it 250 pixels wide and half its current height, giving the result in (b):
+?((resize_window Hello 250 X) (times X2 2 X)
+	(resize_window Hello _ X2)(pp X X2))
+180
+90
+yes
+^
+^sc
+
+^
+^scroll_top_window
+?((scroll_top_window up page))
+^
+^se
+>>> EXAMPLE >>>
+^
+^set
+set (drinks (cola beer wine vodka))
+set (sizes 0 100)
+set (positives 0 pos_inf)
+set (negatives neg_inf 0)
+(small_size [0:0 10:1 20:1 30:0] sizes)
+(very_small_size [0:1 10:1 20:0] sizes)
+(refreshing_drink {cola:0.9 beer:1.0 wine:0.2} drinks)
+^
+^setenv
+?((setenv frlib “MacHD:Fril:Fril Library”))
+yes
+^
+^set_difference
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(itp1 [1:0 2:1 2.5:0])
+
+?((set_difference [0:0 1:1 2:1 3:0] itp1 X)(pp X))
+[0:0 1:1 2:0]
+yes
+
+?((set_difference [10:0 11:1 12:0] itp1 X)(pp X))
+no
+
+?((set_difference [0:0 1:1 2:0.5 2.5:0] {1:1 2:1 3:1} X)(pp X))
+no
+
+?((set_difference weekend {Thurs:0.8 Fri:1} X) (pp X))
+{Sat:1 Sun:1 Mon:0.2}
+yes
+^
+^set_dlog_val
+% Using the dialog example given for the “dialog” built-in predicate
+?((set_dlog_val cluster 'A Dialog!' 'More buttons' 'Third choice'))
+?((set_dlog_val edit 'A Dialog!' editable 'A new string'))
+?((set_dlog_val check_box 'A Dialog!'  'And Me!' on))
+?((set_dlog_val button 'A Dialog!' 'Do nothing' 'Ignore me'))
+?((set_dlog_val popup 'A Dialog!' 'A Popup' item3))
+would leave the dialog as shown
+?((set_dlog_val popup 'A Dialog!' 'A Popup' (item2  item4 item6  item8)))
+would change the contents of the popup menu
+^
+^sh
+The following two programs will delete the files named by a constant bound to FILE, for MS-DOS and UNIX operating systems respectively.
+((delete_msdos FILE)
+	(stringof L FILE)
+	(stringof (d e l ' ' |L) COM)
+	(sh COM))
+((delete_unix FILE)
+	(stringof L FILE)
+	(stringof (r m ' ' |L) COM) 
+	(sh COM)) 
+^
+^sin
+?((sin X 1) (times X 2 PI) (p 'PI' = PI)) 
+PI = 3.14159 
+yes
+^
+^snips
+((append () X X)) 
+((append (H|T) L (H|S)) (append T L S)) 
+?((append X Y (a b)) (p X Y) (pp) (fail)) 
+() (a b) 
+(a) (b) 
+(a b) () 
+no 
+?((snips append X Y (a b)) (p X Y) (pp) (fail)) 
+() (a b)
+^
+^spy
+((goal X)
+	(subgoal1 X Y)
+	(subgoal2 Y Z)
+	(subgoal3 Z))) 
+spy subgoal3 
+tq ((goal X))
+(top-level * 1 0) ****** (goal _3) trace ?l 
+>> (goal 1 3 1) ****** (subgoal3 _5) trace ?n 
+>> (goal 1 3 1) SOLVED (subgoal3 <argZ>) 
+(top-level * 1 0) SOLVED (goal <argX>) 
+yes 
+trace of subgoals “subgoal1” and “subgoal2” not displayed.
+^
+^spying
+Assume that procedures for append, member, reverse and length are defined in the knowledge base. 
+spy append 
+spy reverse 
+?((dict X) (p X "") (fail)) 
+append member reverse length 
+no 
+?((spying X) (p X "") (fail)) 
+append reverse 
+no
+^
+^square
+((root X)
+	(square Y X)
+	(times Y -1 Z)
+	(p The square roots of X are Y and Z)) 
+root 12
+The square roots of 12 are 3.4641 and -3.4641
+yes
+^
+^stack_windows
+?((stack_windows))
+^
+^statistics
+?((statistics))
+control stack : 	226 of 32736 bytes used
+copy stack : 	384 of 32736 bytes used
+trail :	8 of 32736 bytes used
+environment stack : 	32 of 32736 bytes used
+support stack : 	0 of 32736 bytes used
+knowledge base : 	155358 of 171864 bytes used
+symbol table : 	28364 of 36819 bytes used
+cputime : total 34.25 secs
+(5.65 since last call)
+^
+^stricteq
+?((stricteq X X)) 
+yes 
+?((stricteq X Y)) 
+no 
+?((eq X Y) (stricteq X Y))
+yes 
+?((stricteq 'help me' 'help me'))
+yes 
+?((eq X (a b (c Y)) ) (eq Z Y) (stricteq X (a b (c Z)) )) 
+yes
+?((stricteq [0:0 1:1 2:0] [0:0 1:1 2:0]))
+yes
+^
+^stringof
+?((stringof X Const2) (pq X)) 	%prints ('C' o n s t '2') ?((stringof ('C' 'O' n s t '2') X) (pq X)) 	% prints 'COnst2'
+^
+^str_to_list
+?((str_to_list X (Enter a support for (John likes Jill) ?) (ppq X))
+‘Enter a support for (John likes Jill) ?’
+?((str_to_list ‘The quick brown fox’ L) (pp L))
+(The quick brown fox)
+^
+^sum
+ ?((sum 4 3 X) (pp X))
+7
+yes
+?((sum 2 X 3) (pp X))
+1
+yes
+?((sum 2 [0:0 1:1 2:0] X) (pp X))
+[2:0 3:1 4:0]
+yes 
+?((sum [1:0 4:1 5:1 6:0] [0:0 1:1 2:0] X) (pp X))
+[1:0 5:1 6:1 8:0]
+yes
+where the last two examples involve fuzzy arithmetic.
+^
+^supp_collect
+>>> EXAMPLE >>>
+^
+^supp_expect
+>>> EXAMPLE >>>
+^
+^supp_query
+((friends X Y)(likes X Y)(likes Y X)) 
+((likes a b)) : (.9 1) 
+((likes b a)) : (.8 1) 
+?((supp_query ((friends X Y)) S) (p X Y S) (pp) (fail)) 
+a b (0.72 1) 
+b a (0.72 1) 
+no
+((test [0:0 1:1 2:0]))
+?((supp_query ((test [.4:0 .9:1 1.2:1 1.6:0])) S)(p S))
+(0.35 1)
+yes
+?((supp_query ((test [.4:0 .9:1 1.2:1 1.6:0])) S point_match)(p S))
+(0.562786 0.562786)
+yes
+^
+^supp_value
+>>> EXAMPLE >>>
+^
+^sv
+>>> EXAMPLE >>>
+^
+^sys
+sys append 
+no 
+sys times 
+yes 
+sys X 
+no
+^
+^system_garbage
+?((system_garbage))
+^
+^tan
+?((tan X 1) (times X 4 PI) (p 'PI' = PI)) 
+PI = 3.14159 
+yes
+^
+^tempfile
+?((tempfile X)(pp X))
+frl027611
+^
+^times
+?((times 4 3 X) (pp X)) 
+% prints 12 
+?((times 2 X 3) (pp X)) 
+% prints 1.5 
+?((times 2 X 3.0) (pp X)) 
+% prints 1.5 
+?((times 2 [0:0 1:1 2:0] X) (pp X)) 
+% prints [0:0 2:1 4:0]
+?((times [1:0 4:1 5:1 6:0] [0:0 1:1 2:0] X) (pp X))
+% prints [0:0 4:1 5:1 12:0]
+?((times [-1:0 4:1 5:1 6:0] [0:0 1:1 2:0] X) (pp X))
+% prints [-2:0 4:1 5:1 12:0]
+% where the last three examples involve fuzzy arithmetic.
+^
+^top_window
+?((file open fred)(top_window stdwnd))
+opens an edit window for the file “fred”, and brings “stdwnd” to the top of the stack of windows on the screen.
+top_window fred
+brings the edit window “fred” back to the top of the stack.
+
+^
+^tq
+((goal X) (subgoal1 X Y) (subgoal2 Y Z) (subgoal3 Z)) 
+((subgoal1 X Y) (p called subgoal1) (eq X Y))
+tq ((goal hello)) 
+
+^
+^true
+((high_temp X)
+	(less 60 X)
+	(less X 70)
+	(sum Y 60 X)
+	(times Z 10.0 Y)
+	(true (Z Z)))  : ((1 1) (0 0))
+((high_temp X) (less 70 X)) 
+?((supp_query ((high_temp 65)) S) (pp S)) 
+(0.5 0.5)
+yes
+^
+^truncate
+?((truncate 12.1 X) (int X) (pp X))
+12
+yes
+?((truncate 12.0 12))
+yes
+?((truncate Y 12) (pp Y) (int Y))
+12
+no
+?((cprintf stdout "%2.2f" 20))
+0.00	% incorrect printout because 20 is an integer, not a float 
+?((truncate F20 20)(cprintf stdout "%2.2f" F20))
+20.00	% correct printout
+
+^
+^union
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+(itp1 [1:0 2:1 2.5:0])
+
+?((union [0:0 1:1 2:0] itp1 X)(pp X))
+[0:0 1:1 1.5:0.5 2:1 3:0]
+yes
+
+?((union [10:0 11:1 12:0] itp1 X)(pp X))
+[1:0 2:1 3:0 10:0 11:1 12:0]
+yes
+
+?((union [0:0 1:1 2:0.5 2.5:0] {1:1 2:1 3:1} X)(pp X))
+no
+
+?((union weekend {Thurs:0.8 Fri:1} X) (pp X))
+{Fri:1 Sat:1 Sun:1 Thurs:0.8 Mon:0.2}
+yes
+^
+^univ
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+set (sizes 0 100)
+set (positives 0 pos_inf)
+(small_size [0:0 10:1 20:1 30:0] sizes)
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+The following queries succeed:
+	univ days
+	univ sizes
+	univ positives
+whilst the following fail:
+	univ small_size
+	univ weekend
+	univ fred
+^
+^univdict
+set (days (Mon Tues Weds Thurs Fri Sat Sun))
+set (sizes 0 100)
+set (positives 0 pos_inf)
+(small_size [0:0 10:1 20:1 30:0] sizes)
+(weekend {Fri:0.8 Sat:1.0 Sun:1.0 Mon:0.2} days)
+univdict days
+yes
+univdict sizes
+yes
+univdict small_size
+no
+?((univdict X) (pq X represented internally as)(p)(pp X) (fail))
+positives represented internally as [-0.0001:0 0:1]
+sizes represented internally as [-0.01:0 0:1 100:1 100.01:0]
+days represented internally as {Fri:1 Sat:1 Sun:1 Thurs:1 Weds:1 Tues:1 Mon:1}
+^
+^univ_name
+set ('exam percentage' 0 100)
+('good mark' [65:0 80:1] 'exam percentage')
+?((get_univ 'good mark' U) (pq 'good mark' is a subset of U))
+'good mark' is a subset of 'exam percentage'
+yes
+?((get_univ 'good mark' U) 
+	(itype_name GNAME 'good mark')
+	(univ_name UNAME U)
+	(p GNAME is a subset of UNAME))
+good mark is a subset of exam percentage
+yes
+^
+^var
+((check X) (var X) (p term X is a variable)) 
+((check X) (num X) (p term X is a number)) .
+.. etc.
+check HIM
+term _4 is a variable
+check 12
+term 12 is a number 
+^
+^visible
+(see module example)
+^
+^w
+?((create fred) (w fred 'hello fred') (close fred)) 
+would leave the file fred containing a single line: 
+hello fred
+^
+^wdict
+?((wdict X) (p X) (fail)) 
+stdwnd 
+no 
+?((create_window w1 300 100 30 40 (0 0 0) (65535 0 0)))
+yes
+?((wdict X) (pp X) (fail)) 
+stdwnd 
+w1 
+no
+^
+^wh
+Using standard definitions for “append” and “length”:
+wh ((X has length N) (append X Y (a b c)) (length X N)) 
+(() has length 0) 
+((a) has length 1) 
+((a b) has length 2) 
+((a b c) has length 3) 
+no (more) solutions 
+yes
+^
+^wq
+?((create fred) (wq fred 'hello fred') (close fred)) 
+would leave the file fred containing the string 
+'hello fred'
+^
+^write
+?((create fred) (write fred hello fred) (close fred)) 
+would leave the file fred containing the following two lines:
+hello 
+fred
+^
+^writeq
+?((create fred) (writeq fred 'HELLO' fred) (close fred)) 
+would leave the file fred containing the following two lines: 
+'HELLO' 
+fred
+^
+^ws
+((test a)) : (0.5 0.8) 
+((test b)) : (0.7 0.9) 
+((fuzzy [0:0 1:1 2:0]))
+ws ((support for X Y) (test X) (test Y)) 
+(support for a a) : (0.25 0.64) 
+(support for a b) : (0.35 0.72) 
+(support for b a) : (0.35 0.72) 
+(support for b b) : (0.49 0.81) 
+no (more) solutions 
+yes
+ws((support using match)(test [.4:0 .9:1 1.2:1 1.6:0]))
+(test support using match) : (0.35 1)
+yes
+ws(point_match (support using point_match)(test [.4:0 .9:1 1.2:1 1.6:0]))
+(test support using match) : (0.562786 0.562786)
+yes
+^
+^wse
+>>> EXAMPLE >>>
+^
+^wsc
+>>> EXAMPLE >>>
+^
+^wspaces
+?((p start) (wspaces stdout 11) (p finish)) 
+start           finish 
+yes
+^
+^wsv
+((fuzzy [0:0 1:1 2:0]))
+ws ((support for X Y) (test X) (test Y)) 
+(support for a a) : (0.25 0.64) 
+(support for a b) : (0.35 0.72) 
+(support for b a) : (0.35 0.72) 
+(support for b b) : (0.49 0.81) 
+no (more) solutions 
+yes
+ws((support using match)(test [.4:0 .9:1 1.2:1 1.6:0]))
+(test support using match) : (0.35 1)
+yes
+ws(point_match (support using point_match)(test [.4:0 .9:1 1.2:1 1.6:0]))
+(test support using match) : (0.562786 0.562786)
+yes
+>>> EXAMPLE >>>
+^
+^zoom_top_window
+?((current_window stdwnd) (zoom_top_window out) (list all))
+% expands “stdwnd” to its maximum size and lists the whole knowledge base.
+zoom_top_window in
+% restores stdwnd to its previous size.
+^

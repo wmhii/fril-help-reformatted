@@ -1,0 +1,56 @@
+\documentclass{article}
+
+
+%% For Table of Contents hyperlinks
+\usepackage{color}   %May be necessary if you want to color links
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true, %set true if you want colored links
+    linktoc=all,     %set to all if you want both sections and subsections linked
+    linkcolor=black,  %choose some color if you want links to stand out
+}
+\usepackage{luacode}
+
+
+\title{FRIL Help Documentation Rewritten}
+
+
+\begin{document}
+\maketitle
+
+
+\begin{luacode*}
+for line in io.lines("fril_help/FrilHelp.frh") do
+
+	if string.len(line) > 1 then
+		line = string.gsub(line, "_", "\\_")
+	
+		if string.sub(line, 1, 1) == "^" then 
+			line = string.sub(line, 2, string.len(line))
+			tex.print(string.format("\\section{%s}", line));
+			seclabel = string.gsub(line, "\\_", "_")
+			tex.print(string.format("\\label{sec:%s}", seclabel));
+		else
+			-- Bold any strings of the format "<text>"
+			line = string.gsub(line, "<(.-)>", "<\\textbf{%1}>")
+			
+			--Add links to sections
+			sec = string.match(line, "^(.-)/")
+			if sec ~= nil then
+				sec = string.gsub(sec, "\\_", "_")
+				
+				ref = string.format("\\hyperref[sec:%s]{\\textbf{%%1}}/", sec)
+				line = string.gsub(line, "^(.-)/", ref)
+			end
+		
+			tex.print(line)
+			tex.print("\\\\")
+		end
+	end
+end
+
+\end{luacode*}
+
+
+
+\end{document}
